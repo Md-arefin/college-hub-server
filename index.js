@@ -29,7 +29,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect();
+    await client.connect();
 
     const collegeCollection = client.db('collegeHubDB').collection('colleges');
     const userCollection = client.db('collegeHubDB').collection('users');
@@ -52,6 +52,15 @@ async function run() {
     app.get('/colleges-name', async (req, res) => {
       const cursor = collegeCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    // clg id api 
+    app.get('/colleges/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id)
+      const query = { _id: new ObjectId(id) };
+      const result = await collegeCollection.findOne(query);
       res.send(result);
     })
 
