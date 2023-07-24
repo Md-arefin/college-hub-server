@@ -35,8 +35,22 @@ async function run() {
     const userCollection = client.db('collegeHubDB').collection('users');
     
     // clg card api 
-    app.get('/colleges', async (req, res) => {
+    app.get('/college-card', async (req, res) => {
       const cursor = collegeCollection.find().limit(4);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    // clg page card api 
+    app.get('/colleges', async (req, res) => {
+      const cursor = collegeCollection.find().limit(6);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    // clg name api 
+    app.get('/colleges-name', async (req, res) => {
+      const cursor = collegeCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
@@ -49,7 +63,7 @@ async function run() {
       if(existingUser){
         return res.send({ message: "user already exist"})
       }
-      console.log(user)
+      // console.log(user)
       const result = await userCollection.insertOne(user);
       res.send(result);
     })
