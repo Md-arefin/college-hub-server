@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send("College Hub Is Running")
+  res.send("College Hub Is Running")
 })
 
 const uri = `mongodb+srv://${process.env.DB_user}:${process.env.DB_pass}@cluster0.bqstehg.mongodb.net/?retryWrites=true&w=majority`;
@@ -32,12 +32,28 @@ async function run() {
     // await client.connect();
 
     const collegeCollection = client.db('collegeHubDB').collection('colleges');
-
-    app.get('/colleges', async (req, res) =>{
-        const cursor = collegeCollection.find().limit(4);
-        const result = await cursor.toArray();
-        res.send(result);
+    const userCollection = client.db('collegeHubDB').collection('users');
+    
+    // clg card api 
+    app.get('/colleges', async (req, res) => {
+      const cursor = collegeCollection.find().limit(4);
+      const result = await cursor.toArray();
+      res.send(result);
     })
+
+    // users api
+    app.post('/users', async(req, res) => {
+      const user = req.body;
+      const query = { email: user.email }
+      const existingUser = await userCollection.findOne(query)
+      if(existingUser){
+        return res.send({ message: "user already exist"})
+      }
+      console.log(user)
+      const result = await userCollection.insertOne(user);
+      res.send(result);
+    })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
@@ -50,6 +66,6 @@ async function run() {
 run().catch(console.dir);
 
 
-app.listen(port, ()=>{
-    console.log(`server is running on port: ${port}`)
+app.listen(port, () => {
+  console.log(`server is running on port: ${port}`)
 })
