@@ -6,7 +6,6 @@ const port = process.env.port || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
-
 // middleware
 app.use(cors());
 app.use(express.json());
@@ -29,10 +28,11 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const collegeCollection = client.db('collegeHubDB').collection('colleges');
     const userCollection = client.db('collegeHubDB').collection('users');
+    const appliedCollegeCollection = client.db('collegeHubDB').collection('appliedColleges');
     
     // clg card api 
     app.get('/college-card', async (req, res) => {
@@ -61,6 +61,14 @@ async function run() {
       // console.log(id)
       const query = { _id: new ObjectId(id) };
       const result = await collegeCollection.findOne(query);
+      res.send(result);
+    })
+
+    // Apply related api
+    app.post('/applied-college', async(req, res) =>{
+      const appliedCollege = req.body;
+      // console.log(appliedCollege);
+      const result = await appliedCollegeCollection.insertOne(appliedCollege);
       res.send(result);
     })
 
