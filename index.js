@@ -33,7 +33,8 @@ async function run() {
     const collegeCollection = client.db('collegeHubDB').collection('colleges');
     const userCollection = client.db('collegeHubDB').collection('users');
     const appliedCollegeCollection = client.db('collegeHubDB').collection('appliedColleges');
-    
+    const userReviewCollection = client.db('collegeHubDB').collection('userReviews');
+
     // clg card api 
     app.get('/college-card', async (req, res) => {
       const cursor = collegeCollection.find().limit(4);
@@ -65,25 +66,37 @@ async function run() {
     })
 
     // Apply related api
-    app.get('/get-my-college', async(req, res) =>{
+    app.get('/get-my-college', async (req, res) => {
       const result = await appliedCollegeCollection.find().toArray();
       res.send(result)
     })
 
-    app.post('/applied-college', async(req, res) =>{
+    app.post('/applied-college', async (req, res) => {
       const appliedCollege = req.body;
       // console.log(appliedCollege);
       const result = await appliedCollegeCollection.insertOne(appliedCollege);
       res.send(result);
     })
 
+    // review related api
+    app.get('/get-review', async (req, res) =>{
+      const result = await userReviewCollection.find().toArray();
+      res.send(result);
+    })
+
+    app.post('/add-review', async (req, res) => {
+      const review = req.body;
+      const result = await userReviewCollection.insertOne(review);
+      res.send(result);
+    })
+
     // users api
-    app.post('/users', async(req, res) => {
+    app.post('/users', async (req, res) => {
       const user = req.body;
       const query = { email: user.email }
       const existingUser = await userCollection.findOne(query)
-      if(existingUser){
-        return res.send({ message: "user already exist"})
+      if (existingUser) {
+        return res.send({ message: "user already exist" })
       }
       // console.log(user)
       const result = await userCollection.insertOne(user);
