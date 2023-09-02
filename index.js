@@ -65,6 +65,11 @@ async function run() {
     })
 
     // Apply related api
+    app.get('/get-my-college', async(req, res) =>{
+      const result = await appliedCollegeCollection.find().toArray();
+      res.send(result)
+    })
+
     app.post('/applied-college', async(req, res) =>{
       const appliedCollege = req.body;
       // console.log(appliedCollege);
