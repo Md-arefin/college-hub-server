@@ -66,8 +66,11 @@ async function run() {
     })
 
     // Apply related api
-    app.get('/get-my-college', async (req, res) => {
-      const result = await appliedCollegeCollection.find().toArray();
+    app.get('/get-my-college/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email }
+      const result = await appliedCollegeCollection.find(query).toArray();
+      // console.log(email, 'result', result);
       res.send(result)
     })
 
@@ -79,7 +82,7 @@ async function run() {
     })
 
     // review related api
-    app.get('/get-review', async (req, res) =>{
+    app.get('/get-review', async (req, res) => {
       const result = await userReviewCollection.find().toArray();
       res.send(result);
     })
