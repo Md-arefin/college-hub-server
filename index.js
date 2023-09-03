@@ -34,6 +34,7 @@ async function run() {
     const userCollection = client.db('collegeHubDB').collection('users');
     const appliedCollegeCollection = client.db('collegeHubDB').collection('appliedColleges');
     const userReviewCollection = client.db('collegeHubDB').collection('userReviews');
+    const researchCollection = client.db('collegeHubDB').collection('researchs');
 
     // clg card api 
     app.get('/college-card', async (req, res) => {
@@ -62,6 +63,20 @@ async function run() {
       // console.log(id)
       const query = { _id: new ObjectId(id) };
       const result = await collegeCollection.findOne(query);
+      res.send(result);
+    })
+
+    // researchs related API
+
+    app.get('/research', async(req, res) =>{
+      const result = await researchCollection.find().toArray();
+      res.send(result);
+    })
+
+    app.get('/get-research/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id)}
+      const result = await researchCollection.findOne(query);
       res.send(result);
     })
 
